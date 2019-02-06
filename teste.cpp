@@ -1,6 +1,7 @@
 #include <GL/glut.h>
 #include <iostream>
 
+
 // window size
 #define lenX 800
 #define lenY 600
@@ -13,9 +14,6 @@
 #define black 0.0, 0.0, 0.0
 #define grey 0.6, 0.6, 0.6
 
-const double eps = 1e-9;
-
-
 // variables
 double xBody = 0.0;
 double yBody = 0.0;
@@ -23,6 +21,7 @@ double sxy = 1.0;
 double ra = 0.0;
 double rfa = 0.0;
 bool arm, armMax, forearm, forearmMax = false;
+const double eps = 1e-9;
 
 // prototypes
 void drawBody();
@@ -34,14 +33,13 @@ void keyboardActions(unsigned char, int, int);
 //void specialKeyboardActions(int, int, int);
 
 
-
 int main(int argc, char **argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 
     glutInitWindowSize(lenX, lenY);
     glutInitWindowPosition((glutGet(GLUT_SCREEN_WIDTH)-lenX)/2, (glutGet(GLUT_SCREEN_HEIGHT)-lenY)/2);
-    glutCreateWindow("Just a Test");
+    glutCreateWindow("L2");
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(white,1.0);
@@ -50,7 +48,6 @@ int main(int argc, char **argv) {
     glutReshapeFunc(reshape);
     //glutSpecialFunc(specialKeyboardActions);
     glutKeyboardFunc(keyboardActions);
-    //glOrtho(0, lenX, 0, lenY, -1, 1);
 
     glutMainLoop();
 }
@@ -59,7 +56,6 @@ int main(int argc, char **argv) {
 void drawBody() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     glBegin(GL_QUADS);
         // Head
         glColor4f(grey,0.4);
@@ -139,7 +135,7 @@ void reshape(int x, int y) {
     glViewport(0, 0, x, y);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluOrtho2D(-20,20,-20,20);
+    gluOrtho2D(-20*(float)x/y,20*(float)x/y,-20,20);
     glMatrixMode(GL_MODELVIEW);
 }
 
