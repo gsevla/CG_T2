@@ -2,8 +2,8 @@
 #include <iostream>
 
 // window size
-#define lenX 500
-#define lenY 500
+#define lenX 800
+#define lenY 600
 
 // colors
 #define red 1.0, 0.0, 0.0
@@ -12,6 +12,8 @@
 #define green 0.0, 1.0, 0.0
 #define black 0.0, 0.0, 0.0
 #define grey 0.6, 0.6, 0.6
+
+const double eps = 1e-9;
 
 
 // variables
@@ -61,19 +63,19 @@ void drawBody() {
     glBegin(GL_QUADS);
         // Head
         glColor4f(grey,0.4);
-		glVertex2d(xBody-5, yBody+10);
-		glVertex2d(xBody-5, yBody-10);
+		glVertex2d(-5, +10);
+		glVertex2d(-5, -10);
         glColor4f(grey,1.0);
-        glVertex2d(xBody-15, yBody-10);
-		glVertex2d(xBody-15, yBody+10);
+        glVertex2d(-15, -10);
+		glVertex2d(-15, +10);
 
         // Shape
         glColor4f(grey,0.4);
-		glVertex2d(xBody-7.5, yBody+15.5);
-		glVertex2d(xBody-7.5, yBody+10.5);
+		glVertex2d(-7.5, +15.5);
+		glVertex2d(-7.5, +10.5);
         glColor4f(grey,1.0);
-        glVertex2d(xBody-12.5, yBody+10.5);
-		glVertex2d(xBody-12.5, yBody+15.5);
+        glVertex2d(-12.5, +10.5);
+		glVertex2d(-12.5, +15.5);
     glEnd();
 }
 
@@ -83,11 +85,11 @@ void drawArm() {
 
 	glBegin(GL_POLYGON);
         glColor4f(grey,0.4);
-		glVertex2d(xBody-2.5, yBody+10);
-		glVertex2d(xBody-2.5, yBody+0);
+		glVertex2d(-2.5, +10);
+		glVertex2d(-2.5, +0);
         glColor4f(blue,1.0);
-        glVertex2d(xBody-5, yBody+0);
-		glVertex2d(xBody-5, yBody+10);
+        glVertex2d(-5, +0);
+		glVertex2d(-5, +10);
     glEnd();
 
 }
@@ -98,11 +100,11 @@ void drawForearm() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glBegin(GL_POLYGON);
         glColor4f(grey,0.4);
-		glVertex2d(xBody-2.5, yBody+0);
-		glVertex2d(xBody-2.5, yBody-5);
+		glVertex2d(-2.5, +0);
+		glVertex2d(-2.5, -5);
         glColor4f(red,1.0);
-        glVertex2d(xBody-5, yBody-5);
-		glVertex2d(xBody-5, yBody+0);
+        glVertex2d(-5, -5);
+		glVertex2d(-5, +0);
     glEnd();
 }
 
@@ -111,30 +113,24 @@ void drawShapes() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    glPushMatrix();
+    
+            glPushMatrix();
             glScaled(sxy,sxy,1.0);
-
-        glPushMatrix();
             glTranslated(xBody,yBody,0.0);
             drawBody();
 
-            glPushMatrix();
                 glTranslated(-3.75, 10.0, 0.0);
                 glRotated(ra, 0.0, 0.0, 1.0);
                 glTranslated(3.75, -10.0, 0.0);
                 drawArm();
 
-            //glPushMatrix();
                 glTranslated(-3.75, 0.0, 0.0);
                 glRotated(rfa, 0.0, 0.0, 1.0);
                 glTranslated(3.75, 0.0, 0.0);
                 drawForearm();
-            //glPopMatrix();
-            glPopMatrix();
 
         glPopMatrix();
 
-    glPopMatrix();
 
     glutSwapBuffers();
 }
@@ -177,10 +173,14 @@ void keyboardActions(unsigned char key, int xM, int yM) {
 
         // scale
         case 'e':
-            sxy -= 0.2;
+            if (sxy-0.1 > eps) {
+                sxy -= 0.1;
+            }
             break;
         case 'E':
-            sxy += 0.2;
+            if (sxy+0.1 < 2.0) {
+                    sxy += 0.1;
+            }
             break;
 
         // rotate
@@ -188,13 +188,13 @@ void keyboardActions(unsigned char key, int xM, int yM) {
             forearm = true;
             if(forearmMax) {
                 if(rfa > ra) {
-                    rfa -= 10.0;
+                    rfa -= 5.0;
                 } else {
                     forearmMax = false;
                 }
             } else {
-                if (rfa < 150) {
-                    rfa += 10.0;
+                if (rfa < 145) {
+                    rfa += 5.0;
                 } else {
                     forearmMax = true;
                 }
@@ -204,13 +204,13 @@ void keyboardActions(unsigned char key, int xM, int yM) {
             arm = true;
             if(armMax) {
                 if(ra > 0) {
-                    ra -= 10.0;
+                    ra -= 5.0;
                 } else {
                     armMax = false;
                 }
             } else {
                 if(ra < 190) {
-                    ra += 10.0;
+                    ra += 5.0;
                 } else {
                     armMax = true;
                 }
